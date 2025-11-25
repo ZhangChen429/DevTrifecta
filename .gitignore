@@ -1,12 +1,76 @@
-# 大文件类型
-*.zip
-*.pdf
+# Visual Studio 用户特定文件
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# JetBrains Rider
+.idea/
+
+# 编译输出目录
+x64/
+Debug/
+Release/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+
+# 编译产物
+*.obj
+*.o
+*.exe
+*.dll
+*.lib
+*.a
+*.pdb
+*.ilk
+*.exp
+*.iobj
+*.ipdb
+*.log
+*.tlog
+*.lastbuildstate
+*.idb
+*.pch
+
+# 生成的数据文件
+*.csv
 *.xlsx
 *.xls
 
-# IDE
-.idea/
+# 大文件类型
+*.zip
+*.pdf
 
 # 临时文件
 ~$*
 *.tmp
+*.temp
+*~
+
+# Windows 系统文件
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 第三方库 - 忽略二进制和文档
+AnimalDataTool/Thirdpart/**/bin/
+AnimalDataTool/Thirdpart/**/bin64/
+AnimalDataTool/Thirdpart/**/bin64_32/
+AnimalDataTool/Thirdpart/**/binarm64/
+AnimalDataTool/Thirdpart/**/doc/
+AnimalDataTool/Thirdpart/**/examples/
+AnimalDataTool/Thirdpart/**/delphi/
+AnimalDataTool/Thirdpart/**/net/
+AnimalDataTool/Thirdpart/**/php/
+AnimalDataTool/Thirdpart/**/stdcall/
+AnimalDataTool/Thirdpart/**/changelog.txt
+
+# 第三方库 - 保留导入库
+!AnimalDataTool/Thirdpart/**/lib/**/*.lib
+!AnimalDataTool/Thirdpart/**/lib64/**/*.lib
+!AnimalDataTool/Thirdpart/**/lib64_32/**/*.lib
+!AnimalDataTool/Thirdpart/**/libarm64/**/*.lib
