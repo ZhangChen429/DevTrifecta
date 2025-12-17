@@ -104,3 +104,110 @@ public: \
         ); \
         ClassName::StaticType()->AddMethod(method); \
     }
+
+// ========================================
+// UE 风格的反射宏系统
+// ========================================
+
+// 开始反射声明块 - 生成静态注册函数的开始
+#define DVREFLECT_BEGIN(ClassName) \
+public: \
+    static void RegisterReflection() \
+    { \
+        using ThisClass = ClassName;
+
+// 声明并注册属性 (UE风格)
+// 用法: DVPROPERTY(Type, PropertyName, MemberVariable)
+#define DVPROPERTY(Type, PropertyName, MemberVar) \
+        { \
+            auto prop = std::make_shared<DecaVerseCore::Property>( \
+                #PropertyName, \
+                GenerateTypeId(typeid(Type).name()), \
+                offsetof(ThisClass, MemberVar), \
+                DecaVerseCore::Property::CreateGetter(&ThisClass::MemberVar), \
+                DecaVerseCore::Property::CreateSetter(&ThisClass::MemberVar) \
+            ); \
+            ThisClass::StaticType()->AddProperty(prop); \
+        }
+
+// 声明并注册方法 (UE风格) - 无参数
+// 用法: DVFUNCTION_0(MethodName, &ClassName::MethodName)
+#define DVFUNCTION_0(MethodName, MethodPtr) \
+        { \
+            auto method = std::make_shared<DecaVerseCore::Method>( \
+                #MethodName, \
+                GenerateTypeId(typeid(decltype(MethodPtr)).name()), \
+                DecaVerseCore::Method::CreateInvoker(MethodPtr) \
+            ); \
+            ThisClass::StaticType()->AddMethod(method); \
+        }
+
+// 声明并注册方法 (UE风格) - 1个参数
+#define DVFUNCTION_1(MethodName, MethodPtr) \
+        { \
+            auto method = std::make_shared<DecaVerseCore::Method>( \
+                #MethodName, \
+                GenerateTypeId(typeid(decltype(MethodPtr)).name()), \
+                DecaVerseCore::Method::CreateInvoker(MethodPtr) \
+            ); \
+            ThisClass::StaticType()->AddMethod(method); \
+        }
+
+// 声明并注册方法 (UE风格) - 2个参数
+#define DVFUNCTION_2(MethodName, MethodPtr) \
+        { \
+            auto method = std::make_shared<DecaVerseCore::Method>( \
+                #MethodName, \
+                GenerateTypeId(typeid(decltype(MethodPtr)).name()), \
+                DecaVerseCore::Method::CreateInvoker(MethodPtr) \
+            ); \
+            ThisClass::StaticType()->AddMethod(method); \
+        }
+
+// 结束反射声明块 - 生成静态注册函数的结束
+#define DVREFLECT_END() \
+    }
+
+// ========================================
+// 增强版实现宏 - 自动调用 RegisterReflection
+// ========================================
+
+// 在 CPP 文件中实现类型注册（带父类）- 自动调用反射注册
+#define DECAVERSE_IMPLEMENT_TYPE_AUTO(ClassName, ParentClass) \
+    DecaVerseCore::Type* ClassName::StaticType() \
+    { \
+        static std::shared_ptr<DecaVerseCore::Type> type = nullptr; \
+        if (!type) \
+        { \
+            type = std::make_shared<DecaVerseCore::Type>( \
+                #ClassName, \
+                GenerateTypeId(#ClassName), \
+                sizeof(ClassName), \
+                ParentClass::StaticType() \
+            ); \
+            type->SetFactory(&ClassName::CreateInstance); \
+            DecaVerseCore::TypeRegistry::GetInstance().RegisterType(type); \
+            ClassName::RegisterReflection(); \
+        } \
+        return type.get(); \
+    }
+
+// 在 CPP 文件中实现类型注册（无父类）- 自动调用反射注册
+#define DECAVERSE_IMPLEMENT_TYPE_ROOT_AUTO(ClassName) \
+    DecaVerseCore::Type* ClassName::StaticType() \
+    { \
+        static std::shared_ptr<DecaVerseCore::Type> type = nullptr; \
+        if (!type) \
+        { \
+            type = std::make_shared<DecaVerseCore::Type>( \
+                #ClassName, \
+                GenerateTypeId(#ClassName), \
+                sizeof(ClassName), \
+                nullptr \
+            ); \
+            type->SetFactory(&ClassName::CreateInstance); \
+            DecaVerseCore::TypeRegistry::GetInstance().RegisterType(type); \
+            ClassName::RegisterReflection(); \
+        } \
+        return type.get(); \
+    }

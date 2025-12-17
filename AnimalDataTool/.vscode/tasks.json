@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "MSBuild: Build Debug", // 这个名称要和launch.json的preLaunchTask对应
+            "type": "shell",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+           "args": [
+            "${workspaceFolder}\\RTTI\\RTTI.vcxproj", // 改成实际的vcxproj路径
+            "/t:Build",
+            "/p:Configuration=Debug",
+            "/p:Platform=x64",
+            "/m",
+            "/verbosity:minimal"
+        ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile",
+            "detail": "使用VS2022的MSBuild构建C++项目"
+        }
+    ]
+}

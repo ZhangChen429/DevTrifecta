@@ -3,6 +3,8 @@
 #include <typeinfo>
 #include <exception>
 #include "Core/Base/public/DecaVerseRTTI.h"
+#include "Core/RTTI/Object/public/DVActor.h"
+#include "Core/RTTI/Object/public/DVObject.h"
 
 using namespace DecaVerseCore;
 using namespace DecaVerse;
@@ -105,37 +107,37 @@ DECAVERSE_IMPLEMENT_TYPE(Actor, GameObject)
 void TestRTTI()
 {
     std::cout << "\n========================================" << '\n';
-    std::cout << "DecaVerse RTTI Framework Test" << '\n';
+    std::cout << "DecaVerse RTTI 测试" << '\n';
     std::cout << "========================================\n" << '\n';
 
     // 1. 类型信息测试
-    std::cout << "--- 1. Type Information Test ---" << '\n';
-    const Type* gameObjectType = GameObject::StaticType();
-    const Type* actorType = Actor::StaticType();
+    std::cout << "--- 1. Type 信息 Test ---" << '\n';
+    const Type* gameObjectType = DVObject::StaticType();
+    const Type* actorType = DVActor::StaticType();
 
-    std::cout << "GameObject Type: " << gameObjectType->GetName()
+    std::cout << "DVObject Type: " << gameObjectType->GetName()
               << ", Size: " << gameObjectType->GetSize() << " bytes" << '\n';
-    std::cout << "Actor Type: " << actorType->GetName()
+    std::cout << "DVActor Type: " << actorType->GetName()
               << ", Size: " << actorType->GetSize() << " bytes" << '\n';
 
     // 2. 继承关系测试
-    std::cout << "\n--- 2. Inheritance Test ---" << '\n';
-    std::cout << "Actor IsA GameObject: " << (actorType->IsA("GameObject") ? "Yes" : "No") << '\n';
-    std::cout << "GameObject IsA Actor: " << (gameObjectType->IsA("Actor") ? "Yes" : "No") << '\n';
+    std::cout << "\n--- 2. 继承关系 Test ---" << '\n';
+    std::cout << "DVActor IsA DVObject: " << (actorType->IsA("GameObject") ? "Yes" : "No") << '\n';
+    std::cout << "DVObject IsA DVActor: " << (gameObjectType->IsA("Actor") ? "Yes" : "No") << '\n';
 
     // 3. 对象创建测试
     std::cout << "\n--- 3. Object Creation Test ---" << '\n';
-    Actor* actor = CreateInstance<Actor>("Actor");
+    DVActor* actor = CreateInstance<DVActor>("DVActor");
     if (actor)
     {
-        std::cout << "Successfully created Actor instance" <<'\n';
+        std::cout << "成功 created DVActor instance" <<'\n';
         actor->SetName("Hero");
         actor->SetId(1001);
-        std::cout << "Actor Name: " << actor->GetName() << ", ID: " << actor->GetId() << '\n';
+        std::cout << "DVActor Name: " << actor->GetName() << ", ID: " << actor->GetId() << '\n';
     }
 
     // 4. 属性反射测试
-    std::cout << "\n--- 4. Property Reflection Test ---" << '\n';
+    std::cout << "\n--- 4. Property 属性反射测试 Reflection Test ---" << '\n';
     if (actor)
     {
         const Property* healthProp = actorType->GetProperty("health");
@@ -161,7 +163,7 @@ void TestRTTI()
     }
 
     // 5. 方法反射测试
-    std::cout << "\n--- 5. Method Reflection Test ---" <<'\n';
+    std::cout << "\n--- 5. Method 方法反射测试  Reflection Test ---" <<'\n';
     if (actor)
     {
         const Method* updateMethod = actorType->GetMethod("Update");

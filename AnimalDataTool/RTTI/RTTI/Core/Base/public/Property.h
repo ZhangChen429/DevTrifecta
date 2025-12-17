@@ -9,18 +9,65 @@ namespace DecaVerseCore
     class Any
     {
     public:
-        Any() : m_data(nullptr), m_typeId(0) {}
+        Any() : m_data(nullptr), m_typeId(0), m_deleter(nullptr) {}
 
         template<typename T>
         Any(const T& value) : m_typeId(GenerateTypeId(typeid(T).name()))
         {
             m_data = new T(value);
+            // 存储正确的删除器
+            m_deleter = [](void* ptr) { delete static_cast<T*>(ptr); };
+        }
+
+        // 拷贝构造函数
+        Any(const Any& other) : m_data(nullptr), m_typeId(0), m_deleter(nullptr)
+        {
+            // Any 类型擦除后无法正确拷贝，暂时禁用深拷贝
+            // 如需深拷贝，需要存储拷贝函数指针
+        }
+
+        // 拷贝赋值运算符
+        Any& operator=(const Any& other)
+        {
+            if (this != &other)
+            {
+                Clear();
+                // 暂时禁用深拷贝
+            }
+            return *this;
+        }
+
+        // 移动构造函数
+        Any(Any&& other) noexcept
+            : m_data(other.m_data)
+            , m_typeId(other.m_typeId)
+            , m_deleter(other.m_deleter)
+        {
+            other.m_data = nullptr;
+            other.m_typeId = 0;
+            other.m_deleter = nullptr;
+        }
+
+        // 移动赋值运算符
+        Any& operator=(Any&& other) noexcept
+        {
+            if (this != &other)
+            {
+                Clear();
+                m_data = other.m_data;
+                m_typeId = other.m_typeId;
+                m_deleter = other.m_deleter;
+
+                other.m_data = nullptr;
+                other.m_typeId = 0;
+                other.m_deleter = nullptr;
+            }
+            return *this;
         }
 
         ~Any()
         {
-            if (m_data)
-                delete static_cast<char*>(m_data);
+            Clear();
         }
 
         template<typename T>
@@ -43,8 +90,18 @@ namespace DecaVerseCore
         bool IsValid() const { return m_data != nullptr; }
 
     private:
+        void Clear()
+        {
+            if (m_data && m_deleter)
+            {
+                m_deleter(m_data);  // 调用正确的析构函数
+                m_data = nullptr;
+            }
+        }
+
         void* m_data;
         TypeId m_typeId;
+        void (*m_deleter)(void*);  // 函数指针，存储正确的删除器
     };
 
     // Property 类 - 属性反射

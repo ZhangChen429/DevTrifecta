@@ -1,0 +1,19 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+      "configurations": [
+        {
+            "name": "Run RTTI Project",
+            "type": "cppvsdbg", // 对应VS的调试引擎（需安装微软C/C++插件）
+            "request": "launch",
+            "program": "${workspaceFolder}\\x64\\Debug\\RTTI.exe", // 替换为你的可执行文件路径
+            "args": [],
+            "stopAtEntry": false, // 设为true会在main函数开头暂停
+            "cwd": "${workspaceFolder}", // 运行时的工作目录
+            "externalConsole": true, // 设为true会弹出独立的控制台窗口（方便看输出）
+            "preLaunchTask": "MSBuild: Build Debug" // 运行前自动执行构建任务（需和tasks.json中的任务名一致）
+        }
+    ]
+}
